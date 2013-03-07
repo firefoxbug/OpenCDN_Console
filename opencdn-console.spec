@@ -9,7 +9,7 @@ License:	GNU
 URL:		http://www.ocdn.me
 BuildRoot:	/tmp/billing-build-root
 Requires:       httpd mysql-server php php-cli php-mbstring php-pdo php-mysql php-common bc
-Requires:       syslog-ng inotify-tools 
+Requires:       syslog-ng inotify-tools MySQL-python 
 BuildArch: noarch
 #BuildRequires: gcc
 #Requires:      gcc
