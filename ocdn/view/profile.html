@@ -1,0 +1,75 @@
+<div class="container-fluid profile-body">
+	<div class="row-fluid">
+		<div class="span12"> 
+			<form class="form-horizontal" id="dnspod">
+				<legend>DNSPod账号关联
+					<?php
+						if($info['dnspod'] == 'valid') echo '(已绑定)';
+						elseif(!empty($info['dnspod_user'])) echo '(绑定失效)';
+					 ?>
+				</legend>
+				<div class="control-group">
+					<label class="control-label" for="loginMail">登陆账号</label>
+					<div class="controls">
+						<div class="input-prepend">
+							<span class="add-on"><i class="icon-user"></i></span>
+							<input name="user" placeholder="DNSPod登陆账号" id="loginMail" type="text" value="<?php echo $info['dnspod_user']; ?>">
+						</div>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="oldPass">登陆密码</label>
+					<div class="controls">
+						<div class="input-prepend">
+							<span class="add-on"><i class="icon-lock"></i></span>
+							<input type="password" placeholder="DNSPod登陆密码" name="pass" id="oldPass" value="<?php if(!empty($info['dnspod_pass'])) echo 'opencdnOPENCDN'; ?>">
+						</div>
+						<a class="btn ele" href="javascript:void(0);" onClick="post('dnspod', './?api:dnspodBind')">保存</a>
+					</div>
+				</div>
+			</form>
+			<form class="form-horizontal" id="changePwd">
+				<legend>修改密码</legend>
+				<div class="control-group">
+					<label class="control-label" for="oldPass">当前密码</label>
+					<div class="controls">
+						<div class="input-prepend">
+							<span class="add-on"><i class="icon-lock"></i></span>
+							<input type="password" placeholder="当前密码" name="oldPass" id="oldPass">
+						</div>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="newPass">新密码</label>
+					<div class="controls">
+						<div class="input-prepend">
+							<span class="add-on"><i class="icon-lock"></i></span>
+							<input type="password" placeholder="新密码" name="newPass" id="newPass">
+						</div>
+						<a class="btn ele" href="javascript:void(0);" onClick="post('changePwd', './?api:passwdChange')">保存</a>
+					</div>
+				</div>
+			</form>
+			<form class="form-horizontal">
+				<legend>登陆账号</legend>
+				<div class="control-group">
+					<label class="control-label">登陆邮箱</label>
+					<div class="controls">
+						<div class="input-prepend">
+							<span class="add-on"><i class="icon-envelope"></i></span>
+							<input id="changeMail" type="text" value="<?php echo $info['mail']; ?>" disabled="">
+						</div>
+						<span class="mode-none">
+							<a class="ele" href="javascript:void(0);" id="mailChange">修改</a>
+						</span>
+						<span class="mode-edit">
+							<a class="btn" id="mailChangeSave">保存</a>
+							<a class="btn" id="mailChangeCancel">取消</a>
+						</span>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+			

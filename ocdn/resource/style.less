@@ -1,0 +1,210 @@
+body{
+	padding-top: 91px;
+	padding-bottom: 20px;
+	font-family: "Microsoft YaHei";
+}
+
+.default-body{
+	margin-top:100px;
+	background:url(./image/index-bg.jpg);
+	text-align:center;
+	h1{
+		color:#FFF;
+		margin-bottom:40px;
+	}
+	.btn{
+		width:207px;
+	}
+}
+.navbar{
+	text-align: center;
+	.brand{
+		margin-right: 40px;
+	}
+	.pull-left{
+		i{
+			/*width: 28px;*/
+			height: 25px;
+			display: block;
+			margin-top: 13px;
+			padding: 0px 15px 0px 15px;
+		}
+		.nav-node{
+			background: url('./image/nav-node.png') no-repeat top center;
+		}
+		.nav-site{
+			background: url('./image/nav-site.png') no-repeat top center;
+		}
+		.nav-dnspod{
+			background: url('./image/nav-dnspod.png') no-repeat top center;
+		}
+	}
+	.pull-right{
+		i{
+			margin:3px 3px 0px 0px;
+		}
+		li{
+			margin-top: 18px;
+		}
+	}
+	li{
+		/*width: 58px;*/
+		a{
+			opacity: 0.70;
+		}
+		a:hover{
+			color: #FFFFFF;
+			-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+			filter: alpha(opacity=100);
+			-moz-opacity: 1;
+			-khtml-opacity: 1;
+			opacity: 1;
+		}
+	}
+}
+
+.node-body{
+	table{
+		table-layout: fixed;
+	}
+}
+
+.nodeInfo-body{
+	.tab{
+		display: none;
+	}
+	.tab-show{
+		display: block;
+	}
+	.tab-table{
+		width: 100%;
+		/*table-layout: fixed;*/
+		border-collapse: separate;
+		border-spacing: 5px 10px;
+		th{
+			text-align: center;
+			font-weight: bold;
+		}
+		.tab-info{
+			background-color: #EEE;
+			text-align: center;
+			width: 20%;
+		}
+		.tab-value{
+			width: 30%;
+		}
+		td{
+			padding: 5px;
+		}
+	}
+	.progress{
+		margin-bottom: 0px;
+	}
+}
+
+.domain-body{
+	table{
+		table-layout: fixed;
+	}
+	form{
+		.ele{
+			margin-right: 5px;
+		}
+	}
+	.bind{
+		text-align: right;
+		margin-top: 7px;
+	}
+	.dnspod-mini{
+		display: none;
+		width:14px;
+		height:14px;
+		background: url('./image/dnspod-mini.png') no-repeat top center;
+		margin-top: 4px;
+		margin-left:4px;
+	}
+	.dnspod-ok{
+		.dnspod-mini{
+			display: inline-block;
+			cursor: pointer;
+		}
+	}
+	.dnspod{
+		display: inline-block;
+		width: 101px;
+		height: 20px;
+		background: url('./image/dnspod.png') no-repeat top center;
+		margin: 0px 0px -5px 5px;
+	}
+	.invalid,.valid{
+		i{
+			cursor: pointer;
+			margin-top: 4px;
+		}
+		.load{
+			display: none;
+		}
+		.domain-info{
+			display: none;
+			.well-a{
+				border-left: solid 1px #DDD;
+			}
+			.well-cname,.well-a{
+				text-align: center;
+			}
+		}
+		.well{
+			margin-bottom: 5px;
+			position: relative;
+			.or{
+				position: absolute;
+				top:15px;
+				text-align: center;
+				left:50%;
+				right:50%;
+			}
+			.record-status{
+				display: none;
+			}
+		}
+	}
+	.valid{
+		.status-on{
+			display: inline;
+		}
+		.status-off{
+			display: none;
+		}
+		.record-valid{
+			.record-status{
+				display: inline;
+			}
+			.green{
+				color:rgb(42, 247, 14);;
+			}
+		}
+	}
+
+	.invalid{
+		.status-off{
+			display: inline;
+		}
+		.status-on{
+			display: none;
+		}
+	}
+}
+
+.profile-body{
+	.mode-edit{
+		display:none;
+	}
+	.mail-mode-edit{
+		.mode-edit{
+			display:inline;
+		}
+		.mode-none{
+			display:none;
+		}
+	}
+}

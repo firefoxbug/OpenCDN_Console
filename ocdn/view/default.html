@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>OpenCDN</title>
+
+	<!-- Le styles -->
+	<link href="./resource/bootstrap/css/bootstrap.css" rel="stylesheet">
+	<link href="./resource/style.less" rel="stylesheet/less" type="text/css">
+
+	<script src="./resource/jquery-1.9.0.min.js" type="text/javascript"></script>
+	<script src="./resource/less-1.3.3.min.js" type="text/javascript"></script>
+	<script src="./resource/artDialog/jquery.artDialog.js?skin=black"></script>
+	<script src="./resource/artDialog/plugins/iframeTools.js"></script>
+
+
+	<script type="text/javascript">
+		(function (config) {
+			config['lock'] = true;
+			config['fixed'] = true;
+			config['drag'] = false;
+			config['okVal'] = '确定';
+			config['cancelVal'] = '取消';
+		})(art.dialog.defaults);
+		window.alert = art.dialog.alert;
+	</script>
+	<script src="./resource/global.js" type="text/javascript"></script>
+
+	<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]>
+		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+</head>
+<body class="default-body">
+	<h1>OpenCDN</h1>
+	<form class="container" id="loginForm">
+		<div class="row">
+			<div class="span12">
+				<div class="input-prepend">
+					<span class="add-on"><i class="icon-envelope"></i></span>
+					<input type="text" placeholder="邮箱" name="mail">
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="span12">
+				<div class="input-prepend">
+					<span class="add-on"><i class="icon-lock"></i></span>
+					<input type="password" placeholder="密码" name="pass">
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="span12">
+				<a href="javascript:login();" class="btn btn-large btn-primary">登陆</a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="span12">
+				<a href="./?reg" >注册</a>
+			</div>
+		</div>
+	</form>
+</body>
+
