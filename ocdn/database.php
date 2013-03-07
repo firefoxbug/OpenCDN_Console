@@ -4,7 +4,7 @@ class database {
 	private $dbHost = 'localhost';
 	private $dbName = 'cdn_info';
 	private $dbUser = 'root';
-	private $dbPass = 'ocdn.me';
+	private $dbPass = 'DB';
 	private $dbObj = false;
 
 	function __construct(){
