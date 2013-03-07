@@ -1,0 +1,79 @@
+#!/bin/bash
+#author : firefoxbug
+#
+#nohup /bin/bash /usr/local/awstats/tools/read_info.sh > /var/log/read_info.log 2>&1 &
+
+OPENCDN_CONF_FILE="/usr/local/opencdn/conf/opencdn.conf"
+OPENCDN_PIPE_PATH="/usr/local/opencdn/pipe"
+sys_fifo="${OPENCDN_PIPE_PATH}/sys_info.pipe"
+if [ ! -p "$sys_fifo" ];then
+    mkfifo $sys_fifo
+    service syslog-ng restart
+fi
+exec 7<>$sys_fifo
+
+#mysql initial
+function mysql_initial()
+{
+    DB_PassWord=`cat $OPENCDN_CONF_FILE | grep "DB_PassWord" | awk -F = '{print $2}'`
+    #database initial 
+    DB_HOST="127.0.0.1"
+    DB_USER="root"
+    DB_PASSWD="$DB_PassWord"
+    PORT="3306"
+    DB_NAME="cdn_info"
+    TABLENAME="node_info"
+    select_sql="select * from ${TABLENAME}"
+}
+
+function add_node_mysql()
+{
+    insert_sql="insert into ${TABLENAME} values(\
+\"$1\",\"on\",\
+\"${ip[0]}\",\"${netmask[0]}\",\
+\"${ip[1]}\",\"${netmask[1]}\",\
+\"$System_release\",\"$Kernel_release\",\
+\"$Frequency\",\"$CPU_cores\",\
+\"${Mem_total}M\",\
+\"${Swap_total}M\",\
+\"${Disk_total}M\",\
+\"0%\",\"0%\",\
+\"${onboot[0]}\",\"${send_last[0]}\",\"${recv_last[0]}\",\"${send_total_rate[0]}\",\"${recv_total_rate[0]}\",\
+\"${onboot[1]}\",\"${send_last[1]}\",\"${recv_last[1]}\",\"${send_total_rate[1]}\",\"${recv_total_rate[1]}\",\
+\"${Mem_used}M\",\"${Mem_free}M\",\"$Mem_per\",\
+\"${Swap_used}M\",\"${Swap_free}M\",\"$Swap_per\",\
+\"${Disk_used}M\",\"${Disk_free}M\",\"$Disk_per\",\
+\"${cache}\"\
+)"
+    mysql -h${DB_HOST}  -P${PORT}  -u${DB_USER} -p${DB_PASSWD} -D${DB_NAME} -e "${insert_sql};"
+}
+
+node_num=0
+
+# mysql initial 
+mysql_initial
+
+# read configure file of opencdn
+# read_conf
+
+while :
+do
+    read -u7 LINE
+    IP=`echo "$LINE" | awk '{print $1}'`
+    #       echo "$IP"
+    if [ -z "${IP}" ]
+    then
+        continue
+    fi
+
+    is_node_exist=`mysql -h${DB_HOST}  -P${PORT}  -u${DB_USER} -p${DB_PASSWD} -D${DB_NAME} -e "${select_sql} where NodeIP=\"${IP}\";"`
+    if [ ! -z "$is_node_exist" ]
+    then
+        mysql_cmd=`echo "$LINE" | sed "s/^${IP} //"`
+        if [ -z "`echo $mysql_cmd | grep ^update`" ]
+        then
+            mysql_cmd="update "${mysql_cmd}
+        fi
+        mysql -h${DB_HOST}  -P${PORT}  -u${DB_USER} -p${DB_PASSWD} -D${DB_NAME} -e "${mysql_cmd} where NodeIP=\"${IP}\";"
+    fi
+done

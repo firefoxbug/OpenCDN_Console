@@ -1,0 +1,32 @@
+#!/bin/bash
+
+###########################
+rsync_tmp='/usr/local/opencdn/conf_rsync,ocdn.me,ocdn_nginx,ocdn'
+OPENCDN_CONF_FILE="/usr/local/opencdn/conf/opencdn.conf"
+OPENCDN_LOG_PATH="/var/log/opencdn"
+
+if [ ! -f "$OPENCDN_CONF_FILE" ]
+then
+	echo "$OPENCDN_CONF_FILE does not exist !"
+	exit 1
+fi
+
+i=1
+cat $OPENCDN_CONF_FILE | sed '/^#/D' | grep -i "Node[0-9]" | while read NodeIP
+do
+		Node[$i]=`echo "$NodeIP" | awk -F = '{print $2}'`
+#		echo "Node$i : ${Node[$i]}"
+		item=`echo "$rsync_tmp" | sed "s/ocdn.me/${Node[$i]}/"`
+#		echo $item
+		dir=`echo $item | awk -F"," '{print $1}'`
+		host=`echo $item | awk -F"," '{print $2}'`
+		module=`echo $item | awk -F"," '{print $3}'`
+		user=`echo $item | awk -F"," '{print $4}'`
+		/usr/bin/inotifywait -mrq --timefmt '%d/%m/%y %H:%M' --format '%T %w%f%e' -e modify,delete,create,attrib $dir \
+		| while read files
+		do
+			/usr/bin/rsync -vzrtopg --delete --progress --password-file=/etc/rsyncd.pwd $dir ${user}@$host::$module
+			echo "${files} was rsyncd"  >> ${OPENCDN_LOG_PATH}/rsync.error 2>&1
+		done &
+		let i=$i+1
+done

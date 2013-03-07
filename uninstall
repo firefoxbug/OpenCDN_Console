@@ -1,0 +1,92 @@
+#!/bin/bash
+#opencdn unistall
+#author : firefoxbug
+
+user="`whoami`"
+if [ "$user" != "root" ];then
+	echo "execute $0 with root !!! "
+	exit 0;
+fi
+
+echo "==========================OpenCDN===================================="
+echo "*                                                                   *"
+echo "*                                                                   *"
+echo "*                     Welcome To OpenCDN                            *"
+echo "*                                                                   *"
+echo "*                                                                   *"
+echo "==========================OpenCDN===================================="
+
+echo ""
+echo -e "\033[41;37m Please backup your mysql data!!!!! \033[0m"
+echo ""
+
+get_char()
+{
+        SAVEDSTTY=`stty -g`
+        stty -echo
+        stty cbreak
+        dd if=/dev/tty bs=1 count=1 2> /dev/null
+        stty -raw
+        stty echo
+        stty $SAVEDSTTY
+}
+echo ""
+echo "Press any key to start uninstall opencdn , please wait ......"
+char=`get_char`
+
+killall nginx
+/etc/init.d/mysql stop
+killall mysqld
+/usr/local/php/sbin/php-fpm stop
+killall php-cgi
+
+rm -rf /usr/local/php
+rm -rf /usr/local/nginx
+rm -rf /usr/local/mysql
+rm -rf /usr/local/zend
+
+chkconfig --del nginx
+chkconfig --del php-fpm
+chkconfig --del mysql
+
+rm -f /etc/my.cnf
+rm -f /etc/init.d/mysql
+rm -f /root/vhost.sh
+rm -f /root/lnmpd
+rm -f /root/bin/rsync.sh
+
+service opencdn stop
+chkconfig --del opencdn
+rm -f  /etc/init.d/opencdn
+rm -f /etc/opencdn/opencdn.conf
+rm -rf /etc/opencdn/
+
+crontab -r 
+#remove opencdn resources
+rm -rf /home/wwwroot/opencdn/
+rm -rf /home/wwwroot/phpmyadmin/
+rm -rf /home/wwwroot/conf_rsync
+rm -rf /home/wwwroot/ocdn
+rm -rf /home/wwwroot/
+rm -rf /home/wwwlogs
+rm -rf /home/logs
+#remove syslog-ng
+service syslog-ng stop
+yum -y remove syslog-ng
+rm -rf /etc/syslog-ng/
+
+rm -f /home/sys_info.pipe
+rm -f /home/node_url.pipe
+
+#remove awstats
+#rm -rf /usr/local/awstats/
+
+#remove rsync
+yum -y remove rsync
+rm -f /etc/rsyncd.pwd
+rm -f /root/bin/rsync.sh
+
+rm -rf /usr/local/opencdn/
+
+#remove logs
+rm -rf /var/log/opencdn

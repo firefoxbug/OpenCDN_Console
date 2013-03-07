@@ -1,0 +1,12 @@
+#!/bin/bash
+
+RSYNC_CONF="/usr/local/opencdn/conf_rsync"
+STAUTS="`wget http://127.0.0.1/ocdn/?task -O status.txt > /dev/null 2&>1 ;cat status.txt`"
+echo "`date` : $STAUTS"
+if [ "$STAUTS" == "true" ]
+then
+	/etc/init.d/opencdn restart > /dev/null 2>&1
+	sleep 1
+	echo "syn" > ${RSYNC_CONF}/opencdn.tmp
+fi
+rm -f status.txt

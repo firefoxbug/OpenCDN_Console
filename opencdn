@@ -1,0 +1,96 @@
+#!/bin/bash
+
+#description: opencdn
+#chkconfig: 2345 20 81
+
+OPENCDN_LOG_PATH="/var/log/opencdn"
+OPENCDN_EXEC_PATH="/usr/local/opencdn/sbin"
+EXEC="opencdn"
+EXEC_INFO="read_info"
+EXEC_LOG="do_accesslog"
+EXEC_TASK="syn_node"
+EXEC_RSYNC="rsync_send"
+EXEC_ICMP="icmp"
+PID_FILE="/var/run/$EXEC.pid"
+
+
+. /etc/rc.d/init.d/functions
+
+[ -x ${EXEC_RSYNC} ] || echo "ERROR: $EXEC_RSYNC not found" 
+[ -x ${OPENCDN_EXEC_PATH}/$EXEC_INFO ] || echo "ERROR: $EXEC_INFO not found" 
+[ -x ${OPENCDN_EXEC_PATH}/$EXEC_LOG ] || echo "ERROR: $EXEC_LOG not found"
+[ -x ${OPENCDN_EXEC_PATH}/$EXEC_TASK ] || echo "ERROR: $EXEC_TASK not found" 
+[ -f "$PID_FILE" ] || touch $PID_FILE
+
+stop()
+{
+       echo "Stoping $EXEC ..."
+       ps aux | grep "$EXEC_INFO" | kill -9 `awk '{print $2}'` >/dev/null 2>&1
+       ps aux | grep "$EXEC_LOG" | kill -9 `awk '{print $2}'` >/dev/null 2>&1
+       ps aux | grep "$EXEC_TASK" | kill -9 `awk '{print $2}'` >/dev/null 2>&1
+       ps aux | grep "$EXEC_ICMP" | kill -9 `awk '{print $2}'` >/dev/null 2>&1
+
+       #kill rsync and inotify
+       kill -9 `ps aux | grep inotify | awk '{print $2}'` > /dev/null 2>&1
+       kill -9 `ps aux | grep 'rsync_send' | awk '{print $2}'` > /dev/null 2>&1
+
+       service syslog-ng stop
+       echo "" > $PID_FILE
+       usleep 100
+       echo -e "Shutting down $EXEC: \033[41;37m [  OK  ] \033[0m"    
+}
+
+start()
+{
+       if [ "`cat $PID_FILE `" == "running" ]
+       then
+              echo -e "\033[41;37m ERROR \033[0m : $EXEC is running"
+              exit 1
+       fi
+       echo "Starting $EXEC ..."
+       nohup /bin/bash ${OPENCDN_EXEC_PATH}/read_info >> ${OPENCDN_LOG_PATH}/read_info.log 2>&1 &
+       nohup /bin/bash ${OPENCDN_EXEC_PATH}/do_accesslog >> ${OPENCDN_LOG_PATH}/do_accesslog.log 2>&1 &
+       nohup /bin/bash ${OPENCDN_EXEC_PATH}/rsync_send >> ${OPENCDN_LOG_PATH}/rsync-send.log 2>&1 &
+       nohup python ${OPENCDN_EXEC_PATH}/icmp >> ${OPENCDN_LOG_PATH}/node_health.log 2>&1 &
+
+       service syslog-ng start
+       echo "running" > $PID_FILE
+       usleep 100
+       echo -e "Starting $EXEC: \033[41;37m [  OK  ] \033[0m"        
+}
+
+status()
+{
+       if [ "`cat $PID_FILE`" == "running" ]
+       then
+              echo "$EXEC is running"
+       else
+              echo "$EXEC is not running"
+       fi       
+}
+
+restart()
+{
+	stop
+	start
+}
+
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		restart
+		;;
+       status)
+              status
+              ;;
+	*)
+		echo "Usage: service $EXEC {start|stop|restart|status}"
+		exit 1
+esac
+
+exit $?

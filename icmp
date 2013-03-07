@@ -1,0 +1,21 @@
+#!/usr/bin/python
+
+import MySQLdb
+import os,sys,time
+pwd=os.popen('cat /usr/local/opencdn/conf/opencdn.conf | grep DB_PassWord | awk -F= \'{print $2}\'').read()
+db=MySQLdb.connect('127.0.0.1','root',pwd[:-1],'cdn_info')
+print 'Database connected.'
+cur=db.cursor()
+while 1:
+	cur.execute("select NodeIP from node_info;")
+	rows=cur.fetchall()
+	for i in range(0,len(rows)):
+		cmd='ping -W 3 -c 2 '+rows[i][0]
+		a=os.popen(cmd).read()
+		if (a.find("time=")!=-1):
+			print '\033[92m'+rows[i][0]+' is up'+'\033[0m'
+			cur.execute("update node_info set Status='on' where NodeIP='"+rows[i][0]+"';")
+		else:
+			print '\033[91m'+rows[i][0]+' is down.'+'\033[0m'
+			cur.execute("update node_info set status='off' where NodeIP='"+rows[i][0]+"';")
+	time.sleep(5)

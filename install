@@ -1,0 +1,297 @@
+#!/bin/bash
+
+# Hello boys and girls, Welcome to OpenCDN!
+# OpenCDN a open-source management platform, which can help you build node-hosts in 5 minutes.
+# The system consists of the Control Center(CC) and Node Host(NH). The CC can monitor a basic 
+# system information on each node, such as cpu usage and health status. CC also can collect logs 
+# of nginx from all node-hosts. You'd better reference to source code
+
+# author : firefoxbug
+# E-Mail : wanghuafire@gmail.com
+# Blog   : blog.csdn.net/firefoxbug
+
+## Check user permissions ##
+if [ $(id -u) != "0" ]; then
+	echo "Error: NO PERMISSION! Please login as root to install MAPn."
+	exit 1
+fi
+
+get_char()
+{
+	SAVEDSTTY=`stty -g`
+	stty -echo
+	stty cbreak
+	dd if=/dev/tty bs=1 count=1 2> /dev/null
+	stty -raw
+	stty echo
+	stty $SAVEDSTTY
+}
+
+
+function killd_server()
+{
+	kill -9 `ps aux | grep "httpd" | awk "{print $2}"` > /dev/null 2>&1 
+	kill -9 `ps aux | grep "mysqld" | awk "{print $2}"`  > /dev/null 2>&1 
+	rm -rf /etc/localtime
+	ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+
+	yum install -y ntp crontabs
+	ntpdate -u pool.ntp.org
+	date
+
+	rpm -qa|grep  httpd
+	rpm -e httpd
+	rpm -qa|grep mysql
+	rpm -e mysql
+	rpm -qa|grep php
+	rpm -e php
+
+	yum -y remove httpd*
+	yum -y remove php*
+	yum -y remove mysql-server mysql
+	yum -y remove php-mysql
+
+	yum -y install yum-fastestmirror
+	yum -y remove httpd	
+}
+
+function get_system_basic_info()
+{
+	echo "==========================OpenCDN===================================="
+	echo "*                                                                   *"
+	echo "*                                                                   *"
+	echo "*                     Welcome To OpenCDN                            *"
+	echo "*                                                                   *"
+	echo "*                                                                   *"
+	echo "==========================OpenCDN===================================="
+
+	echo ""
+	echo "Press any key to start install opencdn , please wait ......"
+	char=`get_char`
+
+	OpenCDN_Manage_IP=""
+	echo ""
+	echo -n "now input IP of CDN Management : "
+	read OpenCDN_Manage_IP
+	setenforce 0
+	IS_64=`uname -a | grep "x86_64"`
+	if [ -z "${IS_64}" ]
+	then
+		CPU_ARC="i386"
+	else
+		CPU_ARC="x86_64"
+	fi
+
+	IS_5=`cat /etc/redhat-release | grep "5.[0-9]"`
+	if [ -z "${IS_5}" ]
+	then
+		VER="6"
+		rpm_ver="epel-release-6-8.noarch.rpm"
+		sed -i "1 i\@version:3.2" syslog-ng.conf
+	else
+		VER="5"
+		rpm_ver="epel-release-5-4.noarch.rpm"
+	fi
+
+	rpm -ivh "http://dl.fedoraproject.org/pub/epel/${VER}/${CPU_ARC}/${rpm_ver}"
+}
+
+function is_file_exsist()
+{
+	OCDN_CONF="$1"
+	if [ ! -f "${OCDN_CONF}" ]
+	then
+		echo -e "\033[41;37m ERROR \033[0m"
+		echo "${OCDN_CONF} does not exist ! You can report us : ocdn.me"
+		exit 1
+	fi
+}
+
+get_system_basic_info
+
+killd_server
+OPENCDN_BASE_PATH="/usr/local/opencdn"
+OPENCDN_EXEC_PATH="/usr/local/opencdn/sbin"
+OPENCDN_CONF_PATH="/usr/local/opencdn/conf"
+OPENCDN_PIPE_PATH="/usr/local/opencdn/pipe"
+OPENCDN_CONF_FILE="/usr/local/opencdn/conf/opencdn.conf"
+NODE_LOGS_PATH="/usr/local/opencdn/node_logs"
+OPENCDN_LOG_PATH="/var/log/opencdn"
+
+mkdir -p ${OPENCDN_BASE_PATH}
+mkdir -p ${OPENCDN_EXEC_PATH}
+mkdir -p ${OPENCDN_CONF_PATH}
+mkdir -p ${OPENCDN_LOG_PATH}
+mkdir -p ${OPENCDN_PIPE_PATH}
+mkdir -p ${NODE_LOGS_PATH}
+mkdir -p ${OPENCDN_LOG_PATH}
+
+
+access_log="${OPENCDN_PIPE_PATH}/access.pipe"
+rm -f $access_log
+mkfifo ${access_log}
+if [ ! -p "${access_log}" ] 
+then
+	echo "create ${access_log} failured!!!"
+	exit 1;
+fi
+
+sys_fifo="${OPENCDN_PIPE_PATH}/sys_info.pipe"
+rm -f ${sys_fifo}
+mkfifo $sys_fifo
+if [ ! -p "${sys_fifo}" ] 
+then
+	echo "create ${sys_fifo} failured!!!"
+	exit 1
+fi
+
+OLD_DIR=`pwd`
+mv -f  ${OLD_DIR}/opencdn.conf ${OPENCDN_CONF_PATH}/
+
+wget -c http://soft.vpser.net/lnmp/lnmp0.9.tar.gz
+if [ -f "./lnmp0.9.tar.gz" ]
+then
+	tar -zxvf lnmp0.9.tar.gz
+else
+	echo "Downloading http://soft.vpser.net/lnmp/lnmp0.9.tar.gz failured !!!"
+	exit 1
+fi 
+
+mv -f ${OLD_DIR}/ocdn_console ${OLD_DIR}/lnmp0.9/
+chmod u+x ${OLD_DIR}/lnmp0.9/ocdn_console
+mv -f ${OLD_DIR}/upgrade_php ${OLD_DIR}/lnmp0.9/
+chmod u+x ${OLD_DIR}/lnmp0.9/upgrade_php
+
+pushd lnmp0.9/ 
+is_file_exsist ./ocdn_console
+./ocdn_console
+popd
+
+cd ${OLD_DIR}
+is_file_exsist ./nginx.conf
+
+mv -f /usr/local/nginx/conf/nginx.conf /usr/local/nginx/conf/nginx.conf.bak
+mv -f ./nginx.conf /usr/local/nginx/conf/
+
+is_file_exsist ./php.ini
+
+mv -f /usr/local/php/etc/php.ini /usr/local/php/etc/php.ini.bak
+mv -f ${OLD_DIR}/php.ini /usr/local/php/etc/
+service php-fpm restart
+
+mv -f ${OLD_DIR}/conf_rsync ${OPENCDN_BASE_PATH}/
+chown -R www:www ${OPENCDN_BASE_PATH}/conf_rsync
+
+echo -e "\033[41;37m =======================syslog install======================== \033[0m"
+
+yum -y install syslog-ng
+mv -f ${OLD_DIR}/syslog-ng.conf /etc/syslog-ng/syslog-ng.conf
+chkconfig syslog-ng on
+service syslog-ng start
+/etc/init.d/nginx start
+
+echo -e "\033[41;37m ====================syslog install completed======================\033[0m"
+
+cd ${OLD_DIR}
+
+mkdir -p ${OPENCDN_EXEC_PATH}
+DB_PassWord=`cat ${OPENCDN_CONF_FILE}  | grep "DB_PassWord" | awk -F = '{print $2}'`
+
+filename_sql=${OLD_DIR}/"cdn_info.sql"
+is_file_exsist $filename_sql
+
+DB_NAME="cdn_info"
+create_db_sql="create database  ${DB_NAME}"
+mysql -hlocalhost -uroot -p${DB_PassWord} -e "${create_db_sql}"
+mysql -hlocalhost -uroot -p${DB_PassWord} ${DB_NAME} < "${filename_sql}"
+
+is_file_exsist ${OLD_DIR}/syn_node
+
+yum -y install MySQL-python
+
+[ -f "${OLD_DIR}/icmp" ] && mv -f ${OLD_DIR}/icmp ${OPENCDN_EXEC_PATH}/
+[ -f "${OLD_DIR}/syn_node" ] && mv -f ${OLD_DIR}/syn_node ${OPENCDN_EXEC_PATH}/
+[ -f "${OLD_DIR}/read_info" ] && mv -f ${OLD_DIR}/read_info ${OPENCDN_EXEC_PATH}/
+[ -f "${OLD_DIR}/do_accesslog" ] && mv -f ${OLD_DIR}/do_accesslog ${OPENCDN_EXEC_PATH}/
+
+chmod u+x ${OPENCDN_EXEC_PATH}/*
+
+
+
+echo -e "\033[41;37m =======================rsync install======================= \033[0m"
+
+yum -y remove rsync 
+yum -y install rsync 
+
+cd ${OLD_DIR}
+
+if [ ! -f "./inotify-tools-3.14.tar.gz" ]
+then
+	wget -c http://pkgs.fedoraproject.org/repo/pkgs/inotify-tools/inotify-tools-3.14.tar.gz/b43d95a0fa8c45f8bab3aec9672cf30c/inotify-tools-3.14.tar.gz
+fi
+tar -zxvf inotify-tools-3.14.tar.gz
+
+pushd inotify-tools-3.14
+./configure && make && make install
+popd
+
+ln -sv /usr/local/lib/libinotify* /usr/lib/
+ln -s /usr/local/lib/libinotifytools.so.0 /usr/lib64/libinotifytools.so.0
+
+echo "ocdn.me" >/etc/rsyncd.pwd
+chmod 600 /etc/rsyncd.pwd
+
+mv -f ${OLD_DIR}/rsync_send ${OPENCDN_EXEC_PATH}
+chmod u+x ${OPENCDN_EXEC_PATH}/rsync_send
+
+echo -e "\033[41;37m =======================rsync install completed======================= \033[0m"
+
+
+
+
+echo "===========================Deploy OCDN_Web====================================="
+
+WEB_DIR="${OPENCDN_BASE_PATH}"
+is_file_exsist ${OLD_DIR}/ocdn.tar.gz 
+mv -f ${OLD_DIR}/ocdn.tar.gz ${WEB_DIR}/
+pushd ${WEB_DIR} 
+tar zxvf ocdn.tar.gz
+rm -f ${WEB_DIR}/index.html ${WEB_DIR}/ocdn.tar.gz
+chown -R www:www ${WEB_DIR}/ocdn
+
+sed -i "s/ocdn.me/$DB_PassWord/" ${WEB_DIR}/ocdn/database.php
+popd
+
+
+chmod 777 ${OLD_DIR}/opencdn
+mv -f ${OLD_DIR}/opencdn /etc/init.d/
+chkconfig --add opencdn
+service opencdn restart
+
+mv -f /etc/init.d/iptables /etc/init.d/iptables.bak
+rm -f /etc/sysconfig/iptables
+rm -f /etc/init.d/iptables 
+mv -f ${OLD_DIR}/iptables_start /etc/init.d/iptables
+chmod u+x /etc/init.d/iptables
+mv -f ${OLD_DIR}/iptables.conf /etc/sysconfig/iptables
+service iptables restart
+
+echo "*/1 * * * *  ${OPENCDN_EXEC_PATH}/syn_node >> ${OPENCDN_LOG_PATH}/syn_node.log 2>&1" | crontab -
+
+cd ${OLD_DIR}
+rm -rf lnmp0.9*
+rm -rf inotify-tools*
+rm -f cdn_info.sql
+rm -f install.sh
+rm -f iptables
+rm -rf awstats_initial
+
+echo "==========================OpenCDN===================================="
+echo "*                                                                   *"
+echo "*service opencdn [start|stop|restart|status]                        *"
+echo "*Logs of OpenCDN                                                    *"
+echo "*sys_info log path : ${OPENCDN_LOG_PATH}/read_info.log              *"
+echo "*nginx_log path    : ${OPENCDN_LOG_PATH}/do_accesslog.log           *"
+echo "*node health path  : ${OPENCDN_LOG_PATH}/node_health.log            *"
+echo "*                                                                   *"
+echo "==========================OpenCDN===================================="
