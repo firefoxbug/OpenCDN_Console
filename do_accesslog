@@ -15,7 +15,7 @@ fi
 exec 6<>$tmp_fifo
 NODE_LOGS_PATH="/usr/local/opencdn/node_logs"
 if [ ! -d "${NODE_LOGS_PATH}" ]
-thend
+then
 	mkdir -p "${NODE_LOGS_PATH}"
 fi
 
