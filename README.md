@@ -3,12 +3,16 @@
 ###LAMP环境配置
 
 **本文档以 Centos 6.x 86_64 为蓝本** 本文档约定 所有命令以#打头
+	
+	#wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
 
 	#wget https://github.com/firefoxbug/OpenCDN_Console/blob/master/rpm/centos/6/64/inotify-tools-3.14-1.el6.x86_64.rpm
 	
 	#wget https://github.com/firefoxbug/OpenCDN_Console/blob/master/rpm/centos/6/64/syslog-ng-3.2.5-6.el6.x86_64.rpm
 
 	#wget https://github.com/firefoxbug/OpenCDN_Console/blob/master/rpm/centos/6/64/opencdn-console-1.1-2.el6-noarch.rpm
+
+	#rpm -ivh epel-release-6-8.noarch.rpm
 
 	#rpm -ivh inotify-tools-3.14-1.el6.x86_64.rpm
 
