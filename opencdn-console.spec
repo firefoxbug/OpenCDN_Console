@@ -1,4 +1,4 @@
-%define         VERSION 1.0
+%define         VERSION 1.1
 Name:           opencdn-console
 Version:        %VERSION
 Release:	1%{?dist}

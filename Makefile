@@ -18,3 +18,5 @@ clean:
 	@rm -f *.rpm
 rpm:
 	rpmbuild -bb opencdn-console.spec
+
+.PHONY:rpm
