@@ -2,6 +2,9 @@
 	<div class="row-fluid">
 		<div class="span12">
 			<legend><?php echo $info['domain_name']; ?>缓存清除</legend>
+			<?php if (!function_exists('fsockopen')) { ?>
+				<span style="color:red;">fsockopen函数不可用，无法正常清除缓存<br/></span>
+			<?php } ?>
 			在下面输入要清除的地址，如果有多个地址，每个url一行<br />
 			例如：/images/logo.gif 或 http://ocnd.me/images/logo.gif</p>
 			<input value="http://<?php echo $info['domain_name']; ?>" name="url" type="hidden"/>

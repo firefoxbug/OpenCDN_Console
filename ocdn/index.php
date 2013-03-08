@@ -34,7 +34,7 @@ function json($result, $value){
 
 /*POST过滤器*/	//符合rule返回字符串，否则触发callback，optional为真则返回null
 function filter($name, $rule, $callback, $optional = false){
-	if(isset($_POST[$name]) && preg_match($rule, $post = trim($_POST[$name]))) return $post;
+	if(isset($_POST[$name]) && preg_match($rule, $post = iconv('UTF-8', 'GB2312//IGNORE', trim($_POST[$name])))) return iconv('GB2312', 'UTF-8//IGNORE', $post);
 	elseif(!$optional){
 		if(is_object($callback)) return $callback();
 		else json(false, $callback);
@@ -104,11 +104,13 @@ router('api:login', function(){
 
 router('node',function(){
 	$user = model('user');
-	$user->sessionCheck();
+	$user_id = $user->sessionCheck();
 
 	$node = model('node');
 	$data = array();
+	$info = $user->get($user_id);
 	$data['list'] = $node->nodeList();
+	$data['info'] = $info;
 	view('node.html', $data);
 });
 
@@ -134,12 +136,15 @@ router('api:nodeAdd',function(){
 
 router('api:nodeRemove',function(){
 	$user = model('user');
-	$user->sessionCheck(function(){
+	$user_id = $user->sessionCheck(function(){
 		json(false, '未登录');
 	});
 
 	$id =  filter('id', '/^[0-9]{1,8}$/', 'ID格式错误');
 	$node = model('node');
+
+	$info = $user->get($user_id);
+	if($info['auth'] != 1) json(false, '没有操作权限');
 
 	$node->remove($id);
 	$list = $node->nodeList();
@@ -156,7 +161,7 @@ router('api:nodeName',function(){
 	});
 
 	$id =  filter('id', '/^[0-9]{1,8}$/', 'ID格式错误');
-	$name =  filter('name', '/^[\x{4e00}-\x{9fa5}a-zA-Z0-9]+$/u', '节点名格式错误');
+	$name =  filter('name', '/^[\x{a1}-\x{ff}a-zA-Z0-9\-]+$/', '节点名格式错误');
 	$name = mb_substr($name, 0, 100, 'utf-8');
 	$node = model('node');
 
@@ -513,7 +518,7 @@ router('api:domainRuleAdd',function(){
 		json(false, '未登录');
 	});
 
-	$name = filter('name', '/^[\x{4e00}-\x{9fa5}a-zA-Z0-9]{0,100}$/u', '备注只能为数字英文和中文');
+	$name = filter('name', '/^[\x{a1}-\x{ff}a-zA-Z0-9\-]{0,100}$/', '备注只能为数字英文和中文');
 	$rule_type = filter('rule_type', '/^dir|file$/', '规则类型格式不符');
 	$rule = filter('rule', '/^[a-zA-Z0-9_\/\-\.\|]{1,255}$/', '规则格式不符(a-zA-Z_.-/|)');
 	$is_cache = filter('is_cache', '/^yes|no$/', '是否缓存格式不符');
@@ -566,7 +571,9 @@ router('profile',function(){
 
 	$info = $user->get($user_id);
 	if(empty($info)) exit('该ID信息不存在');
-	$data = array('info' => $info);
+	$model = new model();
+	$reg = $model->db()->query("SELECT value FROM config WHERE name='reg'", 'row');
+	$data = array('info' => $info, 'reg' => $reg['value']);
 	view('profile.html', $data);
 });
 
@@ -600,6 +607,7 @@ router('mail=([a-f0-9]{32})',function($matches){
 	$token = $matches[1];
 	$user = model('user');
 	$result = $user->mailChangeToken($token);
+	header('Content-type: text/html; charset=utf-8'); 
 	if($result == false) echo '更换邮箱失败';
 	else echo '更换邮箱成功！';
 });
@@ -651,6 +659,25 @@ router('api:purge',function(){
 		}
 	}
 	json(true, $returnArray);
+});
+
+router('api:regConfig',function(){
+	$user = model('user');
+	$user_id = $user->sessionCheck(function(){
+		json(false, '未登录');
+	});
+
+	$reg = filter('reg', '/^true|false$/', '全局注册格式错误');
+
+	$info = $user->get($user_id);
+	if(empty($info)) json(false, '该用户ID信息不存在');
+	if($info['auth'] != 1) json(false, '不是系统账号');
+
+	$model = new model();
+	$result = $model->db()->update('config', array('value' => $reg), "name = 'reg'");
+
+	if($result == false) json(false, '数据库操作失败');
+	json(true, '修改成功');
 });
 
 router('test',function(){
