@@ -1,0 +1,20 @@
+<div class="container-fluid purge-body">
+	<div class="row-fluid">
+		<div class="span12">
+			<legend><?php echo $info['domain_name']; ?>缓存清除</legend>
+			在下面输入要清除的地址，如果有多个地址，每个url一行<br />
+			例如：/images/logo.gif 或 http://ocnd.me/images/logo.gif</p>
+			<input value="http://<?php echo $info['domain_name']; ?>" name="url" type="hidden"/>
+			<input value="<?php echo $info['domain_id']; ?>" name="domain_id" type="hidden"/>
+			<textarea rows="10" name="content" style="width:100%;"></textarea>
+			<a href="#" id="startPurge" class="btn">开始清除</a>
+			<a href="#" id="stopPurge" class="btn">停止</a>
+		</div>
+	</div>
+	<div class="row-fluid">
+		<div class="span12 msg well" style="margin-top:20px;">
+			清除结果:<br />
+		</div>
+	</div>
+</div>
+			

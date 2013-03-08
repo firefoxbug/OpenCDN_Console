@@ -1,0 +1,4 @@
+RewriteEngine on
+RewriteCond $1 !^(index\.php|resource)    
+RewriteRule ^(.*)$ index.php?$1 [L]
+#防止其他页面报错

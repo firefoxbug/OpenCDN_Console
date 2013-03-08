@@ -252,11 +252,9 @@ echo -e "\033[41;37m =======================rsync install completed=============
 echo "===========================Deploy OCDN_Web====================================="
 
 WEB_DIR="${OPENCDN_BASE_PATH}"
-is_file_exsist ${OLD_DIR}/ocdn.tar.gz 
-mv -f ${OLD_DIR}/ocdn.tar.gz ${WEB_DIR}/
+mv -f ${OLD_DIR}/ocdn ${WEB_DIR}/
 pushd ${WEB_DIR} 
-tar zxvf ocdn.tar.gz
-rm -f ${WEB_DIR}/index.html ${WEB_DIR}/ocdn.tar.gz
+rm -f ${WEB_DIR}/index.html
 chown -R www:www ${WEB_DIR}/ocdn
 
 sed -i "s/ocdn.me/$DB_PassWord/" ${WEB_DIR}/ocdn/database.php

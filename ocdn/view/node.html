@@ -1,0 +1,58 @@
+<div class="container-fluid node-body">
+	<div class="row-fluid">
+		<form class="span12" id="nodeForm" onsubmit="return false;">
+			<div class="input-append input-prepend">
+				<span class="add-on">节点</span>
+				<input type="text" placeholder="IP地址" name="ip">
+				<a class="btn" href="javascript:nodeAdd();">添加</a>
+			</div>
+		</form>
+	</div>
+	<div class="row-fluid">
+		<div class="span12">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+					<th>节点名称</th>
+					<th>IP地址</th>
+					<th>状态</th>
+					<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php foreach ($list as $value) { ?>
+					<?php
+						$styleClass = '';
+						if($value['Status'] != 'on') $styleClass = 'class="error"';
+						elseif($value['node_access'] == 'deny') $styleClass = 'class="warning"';
+					?>
+					<tr <?php echo $styleClass; ?> >
+						<td>
+							<?php echo '<span>'.$value['node_name'].'&nbsp;<a href="javascript:void(0);" class="node-edit"><small>修改</small></a></span>'; ?>
+							<?php echo '<form style="display:none;"><input name="id" type="hidden" value="'.$value['node_id'].'"/><div class="input-append" style="float:left;"><input type="text" class="input-medium" value="'.$value['node_name'].'" name="name"/><a class="btn nodeName-save" href="javascript:void(0);">保存</a></div><a href="javascript:void(0);" class="edit-cancel" style="padding:5px 0px 0px 5px;"><small>取消</small></a></form>'; ?>
+						</td>
+						<td><?php echo $value['NodeIP']; ?></td>
+						<td>
+							<?php
+							if($value['Status'] == 'on'){
+								if($value['node_access'] == 'deny') echo '正常(无权限)';
+								else echo '正常';
+							}else echo '离线'; 
+							?>
+						</td>
+						<td>
+							<?php if($value['Status'] == 'on' && $value['node_access'] == 'allow') { ?>
+								<a href="./?nodeInfo:<?php echo $value['node_id']; ?>";><i class="icon-hdd"></i></a>
+							<?php } ?>
+							<a href="javascript:void(0);" onClick="confirm('是否删除节点',function(){nodeRemove(<?php echo $value['node_id']; ?>);});";>
+								<i class="icon-remove"></i>
+							</a>
+						</td>
+					</tr>
+					<?php } ?>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+			

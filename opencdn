@@ -16,7 +16,7 @@ PID_FILE="/var/run/$EXEC.pid"
 
 . /etc/rc.d/init.d/functions
 
-[ -x ${EXEC_RSYNC} ] || echo "ERROR: $EXEC_RSYNC not found" 
+[ -x ${OPENCDN_EXEC_PATH}/${EXEC_RSYNC} ] || echo "ERROR: $EXEC_RSYNC not found" 
 [ -x ${OPENCDN_EXEC_PATH}/$EXEC_INFO ] || echo "ERROR: $EXEC_INFO not found" 
 [ -x ${OPENCDN_EXEC_PATH}/$EXEC_LOG ] || echo "ERROR: $EXEC_LOG not found"
 [ -x ${OPENCDN_EXEC_PATH}/$EXEC_TASK ] || echo "ERROR: $EXEC_TASK not found" 

@@ -1,0 +1,185 @@
+<div class="container-fluid nodeInfo-body">
+	<div class="row-fluid">
+		<div class="span9">
+			<div class="row-fluid">
+				<div class="span12 tab tab-show" id="about">
+					<table class="tab-table">
+						<thead>
+							<tr>
+								<th colspan="4">
+									<?php echo "{$NodeIP}({$node_name})"; ?>
+								</th>
+							</tr>
+						</thead>
+					<tbody>
+					<tr>
+						<td class="tab-info">状态</td>
+						<td class="tab-value">正常</td>
+						<td class="tab-info">操作系统</td>
+						<td class="tab-value"><?php echo $System_release; ?></td>
+					</tr>
+					<tr>
+						<td class="tab-info">内核版本</td>
+						<td class="tab-value"><?php echo $Kernel_release; ?></td>
+						<td class="tab-info">处理器型号</td>
+						<td class="tab-value"><?php echo "{$Frequency}({$CPU_cores}核)"; ?></td>
+					</tr>
+					<tr>
+						<td class="tab-info">处理器(CPU)</td>
+						<td class="tab-value" colspan="3">
+							<?php
+								$cpu = (int)$cpu;
+								$free = 100 - $cpu;
+							?>
+							<div class="progress">
+								<div class="bar bar-danger" style="width: <?php echo $cpu; ?>%;">
+									<?php echo "{$cpu}%"; ?>
+								</div>
+								<div class="bar bar-success" style="width: <?php echo $free; ?>%;">
+									<?php echo "{$free}%"; ?>
+								</div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="tab-info">内存(<?php echo $Mem_total; ?>)</td>
+						<td class="tab-value" colspan="3">
+							<?php
+								$use = (int)($Mem_used/$Mem_total * 100);
+								$free = 100 - $use;
+							?>
+							<div class="progress">
+								<div class="bar bar-danger" style="width: <?php echo $use; ?>%;">
+									<?php echo "{$Mem_used}(已使用{$use}%)"; ?>
+								</div>
+								<div class="bar bar-success" style="width: <?php echo $free; ?>%;">
+									<?php echo $Mem_free; ?>
+								</div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="tab-info">交换空间(<?php echo $Swap_total; ?>)</td>
+						<td class="tab-value" colspan="3">
+							<?php if($Swap_total != 0){ ?>
+							<?php
+								$use = (int)($Swap_used/$Swap_total * 100);
+								$free = 100 - $use;
+							?>
+							<div class="progress">
+								<div class="bar bar-danger" style="width: <?php echo $use; ?>%;">
+									<?php echo "{$Swap_used}(已使用{$use}%)"; ?>
+								</div>
+								<div class="bar bar-success" style="width: <?php echo $free; ?>%;">
+									<?php echo $Swap_free; ?>
+								</div>
+							</div>
+							<?php } ?>
+						</td>
+					</tr>
+					<tr>
+						<td class="tab-info">硬盘</td>
+						<td class="tab-value" colspan="3">
+							<?php echo "{$Disk_used}(已使用)/{$Disk_total}"; ?>
+						</td>
+					</tr>
+					</tbody>
+					</table>
+				</div>
+				<div class="span12 tab" id="base">
+					基本操作：正在开发
+				</div>
+				<div class="span12 tab" id="cpu">
+					正在开发
+				</div>
+				<div class="span12 tab" id="disk">
+					正在开发
+				</div>
+				<div class="span12 tab" id="network">
+					<table class="tab-table">
+						<thead>
+							<tr>
+								<th colspan="4">
+									<?php 
+										if($eth0 == 'yes') $eth = '可用';
+										else $eth = '不可用';
+										echo "网卡0({$eth})";
+									?>
+								</th>
+							</tr>
+						</thead>
+					<tbody>
+					<tr>
+						<td class="tab-info">IP</td>
+						<td class="tab-value"><?php echo $IP0; ?></td>
+						<td class="tab-info">掩码</td>
+						<td class="tab-value"><?php echo $Netmask0; ?></td>
+					</tr>
+					<tr>
+						<td class="tab-info">累计发送流量</td>
+						<td class="tab-value"><?php echo $send_all_rate0; ?></td>
+						<td class="tab-info">实时发送流量</td>
+						<td class="tab-value"><?php echo $send_rate0; ?></td>
+					</tr>
+					<tr>
+						<td class="tab-info">累计接收流量</td>
+						<td class="tab-value"><?php echo $recv_all_rate0; ?></td>
+						<td class="tab-info">实时接收流量</td>
+						<td class="tab-value"><?php echo $recv_rate0; ?></td>
+					</tr>
+					</tbody>
+					</table>
+
+					<table class="tab-table">
+						<thead>
+							<tr>
+								<th colspan="4">
+									<?php 
+										if($eth1 == 'yes') $eth = '可用';
+										else $eth = '不可用';
+										echo "网卡1({$eth})";
+									?>
+								</th>
+							</tr>
+						</thead>
+					<tbody>
+					<tr>
+						<td class="tab-info">IP</td>
+						<td class="tab-value"><?php echo $IP1; ?></td>
+						<td class="tab-info">掩码</td>
+						<td class="tab-value"><?php echo $Netmask1; ?></td>
+					</tr>
+					<tr>
+						<td class="tab-info">累计发送流量</td>
+						<td class="tab-value"><?php echo $send_all_rate1; ?></td>
+						<td class="tab-info">实时发送流量</td>
+						<td class="tab-value"><?php echo $send_rate1; ?></td>
+					</tr>
+					<tr>
+						<td class="tab-info">累计接收流量</td>
+						<td class="tab-value"><?php echo $recv_all_rate1; ?></td>
+						<td class="tab-info">实时接收流量</td>
+						<td class="tab-value"><?php echo $recv_rate1; ?></td>
+					</tr>
+					</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="well span3" style="padding: 8px 0;">
+			<ul class="nav nav-list">
+				<li><a href="javascript:void(0);" onClick="tab('about');">状态概览</a></li>
+				<li class="divider"></li>
+				<li class="nav-header">管理</li>
+				<li><a href="javascript:void(0);" onClick="tab('base');">基本操作</a></li>
+				<li class="nav-header">监控</li>
+				<li><a href="javascript:void(0);" onClick="tab('cpu');">处理器监控信息</a></li>
+				<li><a href="javascript:void(0);" onClick="tab('disk');">磁盘监控信息</a></li>
+				<li><a href="javascript:void(0);" onClick="tab('network');">网卡监控信息</a></li>
+				<li class="divider"></li>
+				<li><a href="javascript:history.go(-1);">返回节点管理</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+			

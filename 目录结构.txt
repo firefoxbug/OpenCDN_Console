@@ -1,0 +1,29 @@
+/usr/local/opencdn
+.
+|-- conf
+|   `-- opencdn.conf
+|-- conf_rsync
+|-- node_logs			# 节点日志采集后写入此目录
+|-- ocdn			# Web资源
+|-- pipe			# 管道目录
+|   |-- access.pipe			|--节点access日志文件管道
+|   `-- sys_info.pipe			`--节点系统信息管道
+`-- sbin			# OpenCDN执行文件
+    |-- do_accesslog			|--处理access日志文件程序
+    |-- icmp				|--节点健康状态检测程序
+    |-- read_info			|--节点系统信息读取程序
+    |-- rsync_send			|--本地rsync推送程序
+    `-- syn_node			`--前端触发以及OpenCDN重启系统
+
+/var/log/opencdn/
+.
+|-- do_accesslog.log
+|-- node_health.log
+|-- read_info.log
+|-- rsync-send.log
+`-- syn_node.log
+
+/etc/syslog-ng/
+.
+`-- syslog-ng.conf
+
