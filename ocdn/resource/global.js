@@ -184,6 +184,19 @@ $(document).ready(function(){
 		lock = true;
 		textarea.removeAttr("disabled");
 	});
+
+	$("#globalReg").change(function(){
+		$.post("./?api:regConfig", $("#globalRegForm").serialize(), function(data,status){
+			back = $.parseJSON(data);
+			if(!back.result){
+				alert(back.msg);
+			}else{ 
+				alert(back.data, function(){
+					window.location.reload();
+				});
+			}
+		});
+	})
 });
 
 //注册

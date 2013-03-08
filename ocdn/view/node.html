@@ -1,4 +1,5 @@
 <div class="container-fluid node-body">
+	<?php if($info['auth'] == 1){   ?>
 	<div class="row-fluid">
 		<form class="span12" id="nodeForm" onsubmit="return false;">
 			<div class="input-append input-prepend">
@@ -6,8 +7,10 @@
 				<input type="text" placeholder="IP地址" name="ip">
 				<a class="btn" href="javascript:nodeAdd();">添加</a>
 			</div>
+			<span class="help-inline">现测试阶段节点请少于8个，否则会导致CNAME功能异常</span>
 		</form>
 	</div>
+	<?php } ?>
 	<div class="row-fluid">
 		<div class="span12">
 			<table class="table table-hover">
@@ -44,9 +47,11 @@
 							<?php if($value['Status'] == 'on' && $value['node_access'] == 'allow') { ?>
 								<a href="./?nodeInfo:<?php echo $value['node_id']; ?>";><i class="icon-hdd"></i></a>
 							<?php } ?>
+							<?php if($info['auth'] == 1){  ?>
 							<a href="javascript:void(0);" onClick="confirm('是否删除节点',function(){nodeRemove(<?php echo $value['node_id']; ?>);});";>
 								<i class="icon-remove"></i>
 							</a>
+							<?php } ?>
 						</td>
 					</tr>
 					<?php } ?>

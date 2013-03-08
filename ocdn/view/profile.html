@@ -69,6 +69,20 @@
 					</div>
 				</div>
 			</form>
+			<?php if($info['auth'] == 1){ ?>
+			<form class="form-horizontal" id="globalRegForm">
+				<legend>注册功能</legend>
+				<div class="control-group">
+					<label class="control-label">全局注册</label>
+					<div class="controls">
+						<select id="globalReg" name="reg">
+							<option value="true" <?php if($reg == 'true') echo 'selected="selected"'; ?> >开启</option>
+							<option value="false" <?php if($reg == 'false') echo 'selected="selected"'; ?> >关闭</option>
+						</select>
+					</div>
+				</div>
+			</form>
+			<?php } ?>
 		</div>
 	</div>
 </div>
