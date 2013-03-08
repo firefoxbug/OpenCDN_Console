@@ -4,7 +4,9 @@
 
 **本文档以 Centos 6.x 86_64 为蓝本** 本文档约定 所有命令以#打头
 	
-	#wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+	#wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm (64位)
+	
+	#wget http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm (32位)
 
 	#wget https://github.com/firefoxbug/OpenCDN_Console/blob/master/rpm/centos/6/64/inotify-tools-3.14-1.el6.x86_64.rpm
 	
@@ -44,7 +46,7 @@
 
 	#mysql -uroot -p cdn_info <cdn_info.sql 导入数据
 
-	#sed -i 's#DP#dbpass#g' /usr/share/ocdn/database.php 修改web 数据库配置文件数据库连接信息 (dbpass为你的真实数据库密码)
+	#sed -i 's#DP#dbpass#g' /usr/local/opencdn/ocdn/database.php 修改web 数据库配置文件数据库连接信息 (dbpass为你的真实数据库密码)
 
 	#sed -i 's#DP#dbpass#g' /usr/local/opencdn/conf/opencdn.conf 修改opencdn配置文件数据库密码(dbpass为你的真实数据库密码)
 ####启动opencdn
