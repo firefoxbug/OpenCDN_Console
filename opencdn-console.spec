@@ -1,7 +1,7 @@
 %define         VERSION 1.1
 Name:           opencdn-console
 Version:        %VERSION
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	opencdn-console
 
 Group:		tools
@@ -72,7 +72,9 @@ rm -rf $RPM_BUILD_ROOT
 /var/log/opencdn/
 /etc/init.d/opencdn
 %config(noreplace) /etc/httpd/conf.d/ocdn.conf
+%config(noreplace) /usr/local/opencdn/conf/opencdn.conf
 %config(noreplace) /usr/local/opencdn/ocdn/database.php
+%config(noreplace) /usr/local/opencdn/conf_rsync/*
 %pre
 
 if [ $1 -eq 1 ]; then
@@ -84,6 +86,8 @@ if [ $1 -eq 1 ]; then
 fi
 %post
 chown -R apache:apache /usr/local/opencdn/ocdn/
+chown -R apache:apache /usr/local/opencdn/conf_rsync/
+
 chkconfig --add opencdn
 service opencdn restart
 %postun
