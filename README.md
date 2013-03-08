@@ -8,13 +8,13 @@
 	
 	#wget https://github.com/firefoxbug/OpenCDN_Console/blob/master/rpm/centos/6/64/syslog-ng-3.2.5-6.el6.x86_64.rpm
 
-	#wget https://github.com/firefoxbug/OpenCDN_Console/blob/master/rpm/centos/6/64/opencdn-console-1.0-1.el6-noarch.rpm
+	#wget https://github.com/firefoxbug/OpenCDN_Console/blob/master/rpm/centos/6/64/opencdn-console-1.1-1.el6-noarch.rpm
 
 	#rpm -ivh inotify-tools-3.14-1.el6.x86_64.rpm
 
 	#yum -y localinstall syslog-ng-3.2.5-6.el6.x86_64.rpm
 
-	**yum -y localinstall opencdn-console-1.0-1.el6-noarch.rpm** 推荐这么安装。会动解决依赖关系.
+	**yum -y localinstall opencdn-console-1.1-1.el6-noarch.rpm** 推荐这么安装。会动解决依赖关系.
 
 	检查Selinux状态
 
