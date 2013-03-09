@@ -9,7 +9,7 @@ License:	GNU
 URL:		http://www.ocdn.me
 BuildRoot:	/tmp/billing-build-root
 Requires:       httpd mysql-server php php-cli php-mbstring php-pdo php-mysql php-common bc
-Requires:       inotify-tools MySQL-python 
+Requires:       inotify-tools MySQL-python syslog-ng 
 BuildArch: noarch
 #BuildRequires: gcc
 #Requires:      gcc
@@ -41,6 +41,7 @@ install -p -d -m 0755 $RPM_BUILD_ROOT/usr/local/opencdn/sbin/
 install -p -d -m 0755 $RPM_BUILD_ROOT/var/log/opencdn/
 install -p -d -m 0755 $RPM_BUILD_ROOT/etc/init.d/
 install -p -d -m 0755 $RPM_BUILD_ROOT/etc/httpd/conf.d/
+install -p -d -m 0755 $RPM_BUILD_ROOT/tmp/
 
 install -p -m 0755 opencdn.conf $RPM_BUILD_ROOT/usr/local/opencdn/conf/
 install -p -m 0755 do_accesslog $RPM_BUILD_ROOT/usr/local/opencdn/sbin/
@@ -50,6 +51,7 @@ install -p -m 0755 rsync_send $RPM_BUILD_ROOT/usr/local/opencdn/sbin/
 install -p -m 0755 syn_node $RPM_BUILD_ROOT/usr/local/opencdn/sbin/
 install -p -m 0755 opencdn $RPM_BUILD_ROOT/etc/init.d/
 install -p -m 0755 ocdn.conf $RPM_BUILD_ROOT/etc/httpd/conf.d/
+install -p -m 0755 syslog-ng.conf $RPM_BUILD_ROOT/tmp/
 cp -dpr ocdn/* $RPM_BUILD_ROOT/usr/local/opencdn/ocdn/
 cp -dpr nginx/* $RPM_BUILD_ROOT/usr/local/opencdn/nginx/
 
@@ -71,6 +73,7 @@ rm -rf $RPM_BUILD_ROOT
 /usr/local/opencdn/sbin/
 /var/log/opencdn/
 /etc/init.d/opencdn
+/tmp/
 %config(noreplace) /etc/httpd/conf.d/ocdn.conf
 %config(noreplace) /usr/local/opencdn/conf/opencdn.conf
 %config(noreplace) /usr/local/opencdn/ocdn/database.php
@@ -92,7 +95,8 @@ chkconfig --add opencdn
 service opencdn restart
 %postun
 echo "ocdn.me" >/etc/rsyncd.pwd
-chmod 600 /etc/rsyncd.pwd　
-
+chmod 600 /etc/rsyncd.pwd
+rm -f /etc/syslog-ng/syslog-ng.conf
+mv /tmp/syslog-ng.conf /etc/syslog-ng/syslog-ng.conf
 %changelog
 
