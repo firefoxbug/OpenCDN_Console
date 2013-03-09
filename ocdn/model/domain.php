@@ -101,7 +101,7 @@ class domain extends model{
 		$off .= "\t\tproxy_set_header Host \$host;\n";
 		$off .= "\t\tproxy_set_header X-Real-IP \$remote_addr;\n";
 		$off .= "\t\tproxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;\n";
-		$off .= "\t\taccess_log	/var/log/nginx/access.pipe access;\n";
+		$off .= "\t\taccess_log	/usr/local/opencdn/pipe/access.pipe access;\n";
 		$off .= "\t\tif (\$http_Cache_Control ~ \"no-cache\") {\n";
 		$off .= "\t\t\trewrite ^(.*)$ /purge$1 last;\n";
 		$off .= "\t\t}\n";
@@ -114,7 +114,7 @@ class domain extends model{
 		$on .= "\t\tproxy_set_header Host \$host;\n";
 		$on .= "\t\tproxy_set_header X-Real-IP \$remote_addr;\n";
 		$on .= "\t\tproxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;\n";
-		$on .= "\t\taccess_log /var/log/nginx/access.pipe access;\n";
+		$on .= "\t\taccess_log /usr/local/opencdn/pipe/access.pipe access;\n";
 		$on .= "\t\texpires 2d;\n";
 		$on .= "\t\tif (\$http_Cache_Control ~ \"no-cache\") {\n";
 		$on .= "\t\t\trewrite ^(.*)$ /purge$1 last;\n";
