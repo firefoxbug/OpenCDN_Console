@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- 主机: localhost
--- 生成日期: 2013 年 03 月 03 日 03:53
+-- 生成日期: 2013 年 03 月 06 日 02:34
 -- 服务器版本: 5.5.16
 -- PHP 版本: 5.3.8
 
@@ -157,7 +157,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 --
 
 INSERT INTO `user` (`user_id`, `mail`, `mail_verify`, `passwd`, `salt`, `dnspod_user`, `dnspod_pass`, `dnspod`, `change_mail`, `change_token`, `auth`) VALUES
-(1, 'admin@ocdn.me', 'false', '08f8702e03b2ad3c3616999378253aad', '8PI0dbWDvB88YsQHctIhjx3px', NULL, NULL, 'invalid', '', '', 0);
+(1, 'admin@ocdn.me', 'false', '08f8702e03b2ad3c3616999378253aad', '8PI0dbWDvB88YsQHctIhjx3px', NULL, NULL, 'invalid', '', '', 1);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
