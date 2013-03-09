@@ -1,7 +1,8 @@
 #!/bin/bash
 
 ###########################
-rsync_tmp='/usr/local/opencdn/conf_rsync,ocdn.me,ocdn_nginx,ocdn'
+#rsync_tmp='/usr/local/opencdn/conf_rsync,ocdn.me,ocdn_nginx,ocdn'
+rsync_tmp='/usr/local/opencdn/nginx,ocdn.me,ocdn_nginx,ocdn'
 OPENCDN_CONF_FILE="/usr/local/opencdn/conf/opencdn.conf"
 OPENCDN_LOG_PATH="/var/log/opencdn"
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-RSYNC_CONF="/usr/local/opencdn/conf_rsync"
+RSYNC_CONF="/usr/local/opencdn/nginx"
 STAUTS="`wget http://127.0.0.1/ocdn/?task -O status.txt > /dev/null 2&>1 ;cat status.txt`"
 echo "`date` : $STAUTS"
 if [ "$STAUTS" == "true" ]

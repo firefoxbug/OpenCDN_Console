@@ -33,7 +33,7 @@ opencdn-console
 %install
 rm -rf $RPM_BUILD_ROOT
 install -p -d -m 0755 $RPM_BUILD_ROOT/usr/local/opencdn/conf/
-install -p -d -m 0755 $RPM_BUILD_ROOT/usr/local/opencdn/conf_rsync/
+install -p -d -m 0755 $RPM_BUILD_ROOT/usr/local/opencdn/nginx/
 install -p -d -m 0755 $RPM_BUILD_ROOT/usr/local/opencdn/node_logs/
 install -p -d -m 0755 $RPM_BUILD_ROOT/usr/local/opencdn/ocdn/
 install -p -d -m 0755 $RPM_BUILD_ROOT/usr/local/opencdn/pipe/
@@ -51,7 +51,7 @@ install -p -m 0755 syn_node $RPM_BUILD_ROOT/usr/local/opencdn/sbin/
 install -p -m 0755 opencdn $RPM_BUILD_ROOT/etc/init.d/
 install -p -m 0755 ocdn.conf $RPM_BUILD_ROOT/etc/httpd/conf.d/
 cp -dpr ocdn/* $RPM_BUILD_ROOT/usr/local/opencdn/ocdn/
-cp -dpr conf_rsync/* $RPM_BUILD_ROOT/usr/local/opencdn/conf_rsync/
+cp -dpr conf_rsync/* $RPM_BUILD_ROOT/usr/local/opencdn/nginx/
 
 PREFIX=$RPM_BUILD_ROOT make install
 #make install DESTDIR=$RPM_BUILD_ROOT
@@ -64,7 +64,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 /usr/local/opencdn/conf/
-/usr/local/opencdn/conf_rsync/
+/usr/local/opencdn/nginx/
 /usr/local/opencdn/node_logs/
 /usr/local/opencdn/ocdn/
 /usr/local/opencdn/pipe/
