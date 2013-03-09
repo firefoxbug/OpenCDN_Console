@@ -87,7 +87,7 @@ fi
 %post
 chown -R apache:apache /usr/local/opencdn/ocdn/
 chown -R apache:apache /usr/local/opencdn/conf_rsync/
-
+chown -R apache:apache /usr/local/opencdn/conf/opencdn.conf
 chkconfig --add opencdn
 service opencdn restart
 %postun
