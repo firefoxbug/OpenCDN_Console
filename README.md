@@ -4,21 +4,15 @@
 
 **本文档以 Centos 6.x 86_64 为蓝本** 本文档约定 所有命令以#打头
 	
-	#wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm (64位)
-	
-	#wget http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm (32位)
+	#wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
 
-	#wget https://github.com/firefoxbug/OpenCDN_Console/blob/master/rpm/centos/6/64/inotify-tools-3.14-1.el6.x86_64.rpm
+	#wget http://58.215.133.101:801/rpm/inotify-tools-3.14-1.el6.x86_64.rpm
 	
-	#wget https://github.com/firefoxbug/OpenCDN_Console/blob/master/rpm/centos/6/64/syslog-ng-3.2.5-6.el6.x86_64.rpm
-
-	#wget https://github.com/firefoxbug/OpenCDN_Console/blob/master/rpm/centos/6/64/opencdn-console-1.1-2.el6-noarch.rpm
+	#wget http://58.215.133.101:801/rpm/opencdn-console-1.1-2.el6-noarch.rpm
 
 	#rpm -ivh epel-release-6-8.noarch.rpm
 
 	#rpm -ivh inotify-tools-3.14-1.el6.x86_64.rpm
-
-	#yum -y localinstall syslog-ng-3.2.5-6.el6.x86_64.rpm
 
 	**yum -y localinstall opencdn-console-1.1-2.el6-noarch.rpm** 推荐这么安装。会动解决依赖关系.
 
@@ -36,19 +30,26 @@
 
 	#启动Mysql 并设置密码
 
-	#service mysqld start  设置密码不讲了 
+	#service mysqld start  
+
+	#/usr/bin/mysqladmin -u root password '123' 设置mysql密码
 
 ####导入数据
 
 	#cd /usr/local/opencdn/ocdn
 
-	#mysql -uroot -p -e 'create database cdn_info' 新建cdn_info数据库
+	#mysql -uroot -p123 -e 'create database cdn_info' 新建cdn_info数据库
 
-	#mysql -uroot -p cdn_info <cdn_info.sql 导入数据
+	#mysql -uroot -p123 cdn_info <cdn_info.sql 导入数据
 
-	#sed -i 's#DP#dbpass#g' /usr/local/opencdn/ocdn/database.php 修改web 数据库配置文件数据库连接信息 (dbpass为你的真实数据库密码)
+	#sed -i 's#DP#123#g' /usr/local/opencdn/ocdn/database.php 修改web 数据库配置文件数据库连接信息 (dbpass为你的真实数据库密码)
 
-	#sed -i 's#DP#dbpass#g' /usr/local/opencdn/conf/opencdn.conf 修改opencdn配置文件数据库密码(dbpass为你的真实数据库密码)
+	#sed -i 's#DP#123#g' /usr/local/opencdn/conf/opencdn.conf 修改opencdn配置文件数据库密码(dbpass为你的真实数据库密码)
+
+####重启webserver->http
+
+	/etc/init.d/httpd restart
+	
 ####启动opencdn
 
 	#/etc/init.d/opencdn restart
