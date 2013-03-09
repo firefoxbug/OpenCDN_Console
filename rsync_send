@@ -26,7 +26,7 @@ do
 		/usr/bin/inotifywait -mrq --timefmt '%d/%m/%y %H:%M' --format '%T %w%f%e' -e modify,delete,create,attrib $dir \
 		| while read files
 		do
-			/usr/bin/rsync -vzrtopg --delete --progress --password-file=/etc/rsyncd.pwd $dir ${user}@$host::$module
+			/usr/bin/rsync -vzrtp --delete --progress --password-file=/etc/rsyncd.pwd $dir ${user}@$host::$module
 			echo "${files} was rsyncd"  >> ${OPENCDN_LOG_PATH}/rsync.error 2>&1
 		done &
 		let i=$i+1
