@@ -2,7 +2,7 @@
 .
 |-- conf
 |   `-- opencdn.conf
-|-- conf_rsync
+|-- nginx		#web前端生成的配置
 |-- node_logs			# 节点日志采集后写入此目录
 |-- ocdn			# Web资源
 |-- pipe			# 管道目录
