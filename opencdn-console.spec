@@ -91,8 +91,8 @@ chown -R apache:apache /usr/local/opencdn/conf/opencdn.conf
 chkconfig --add opencdn
 service opencdn restart
 %postun
-echo "ocdn:ocdn.me" >/etc/rsyncd.pwd
-chmod 600 /etc/rsyncd.pwd
+echo "ocdn.me" >/etc/rsyncd.pwd
+chmod 600 /etc/rsyncd.pwd　
 
 %changelog
 
