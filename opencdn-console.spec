@@ -9,7 +9,7 @@ License:	GNU
 URL:		http://www.ocdn.me
 BuildRoot:	/tmp/billing-build-root
 Requires:       httpd mysql-server php php-cli php-mbstring php-pdo php-mysql php-common bc
-Requires:       syslog-ng inotify-tools MySQL-python 
+Requires:       inotify-tools MySQL-python 
 BuildArch: noarch
 #BuildRequires: gcc
 #Requires:      gcc
@@ -74,7 +74,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) /etc/httpd/conf.d/ocdn.conf
 %config(noreplace) /usr/local/opencdn/conf/opencdn.conf
 %config(noreplace) /usr/local/opencdn/ocdn/database.php
-%config(noreplace) /usr/local/opencdn/conf_rsync/*
+%config(noreplace) /usr/local/opencdn/nginx/*
 %pre
 
 if [ $1 -eq 1 ]; then
@@ -86,7 +86,7 @@ if [ $1 -eq 1 ]; then
 fi
 %post
 chown -R apache:apache /usr/local/opencdn/ocdn/
-chown -R apache:apache /usr/local/opencdn/conf_rsync/
+chown -R apache:apache /usr/local/opencdn/nginx/
 chown -R apache:apache /usr/local/opencdn/conf/opencdn.conf
 chkconfig --add opencdn
 service opencdn restart
