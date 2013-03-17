@@ -84,9 +84,9 @@ class domain extends model{
 	}
 
 	public function confUpate($domain_id, $domain, $sourceip, $sourceport = 80){
-		//$path = '../conf_rsync/vhost/'.str_replace('.','_', $domain).'.conf';
+		$path = '../conf_rsync/vhost/'.str_replace('.','_', $domain).'.conf';
 		//$path = '/usr/share/conf_rsync/vhost/'.str_replace('.','_', $domain).'.conf';
-		$path = '../nginx/conf.d/'.str_replace('.','_', $domain).'.conf';
+		//$path = '../nginx/conf.d/'.str_replace('.','_', $domain).'.conf';
 
 		$head = "server {\n";
 		$head .= "\tlisten 80;\n";
@@ -179,8 +179,8 @@ class domain extends model{
 	}
 
 	public function confFileRemove($domain){
-		//$path = '../conf_rsync/vhost/'.str_replace('.','_', $domain).'.conf';
-		$path = '../nginx/conf.d/'.str_replace('.','_', $domain).'.conf';
+		$path = '../conf_rsync/vhost/'.str_replace('.','_', $domain).'.conf';
+		//$path = '../nginx/conf.d/'.str_replace('.','_', $domain).'.conf';
 		if (file_exists($path)) return unlink($path);
 		return false;
 	}
