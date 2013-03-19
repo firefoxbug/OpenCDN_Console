@@ -151,8 +151,8 @@ class domain extends model{
 				$content .= $off;
 			}
 			if($value['rule_type'] == 'dir' && $value['rule'] == '/'){
-				$content .= $log;
 				$content .= $cacheC;
+				$content .= $log;
 			}
 			$content .= "\t}\n";
 		}
