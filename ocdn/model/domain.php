@@ -96,15 +96,20 @@ class domain extends model{
 		$head .= "\t\trewrite ^/(.*)([^/])$ \$scheme://\$host/$1$2/ permanent;\n";
 		$head .= "\t}\n";
 
+		$cacheC = "\t\tif (\$http_Cache_Control ~ \"no-cache\") {\n";
+		$cacheC .= "\t\t\trewrite ^(.*)$ /purge$1 last;\n";
+		$cacheC .= "\t\t}\n";
+		$log = "\t\taccess_log /usr/local/opencdn/pipe/access.pipe access;\n";
+
 		$off = "\t\tproxy_pass	http://{$sourceip}:{$sourceport};\n";
 		$off .= "\t\tproxy_redirect off;\n";
 		$off .= "\t\tproxy_set_header Host \$host;\n";
 		$off .= "\t\tproxy_set_header X-Real-IP \$remote_addr;\n";
 		$off .= "\t\tproxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;\n";
-		$off .= "\t\taccess_log	/usr/local/opencdn/pipe/access.pipe access;\n";
-		$off .= "\t\tif (\$http_Cache_Control ~ \"no-cache\") {\n";
-		$off .= "\t\t\trewrite ^(.*)$ /purge$1 last;\n";
-		$off .= "\t\t}\n";
+		//$off .= "\t\taccess_log	/usr/local/opencdn/pipe/access.pipe access;\n";
+		//$off .= "\t\tif (\$http_Cache_Control ~ \"no-cache\") {\n";
+		//$off .= "\t\t\trewrite ^(.*)$ /purge$1 last;\n";
+		//$off .= "\t\t}\n";
 
 		$on = "\t\tproxy_cache cache_one;\n";
 		$on .= "\t\tproxy_cache_valid 200 304 <day>d;\n";
@@ -114,11 +119,11 @@ class domain extends model{
 		$on .= "\t\tproxy_set_header Host \$host;\n";
 		$on .= "\t\tproxy_set_header X-Real-IP \$remote_addr;\n";
 		$on .= "\t\tproxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;\n";
-		$on .= "\t\taccess_log /usr/local/opencdn/pipe/access.pipe access;\n";
+		//$on .= "\t\taccess_log /usr/local/opencdn/pipe/access.pipe access;\n";
 		$on .= "\t\texpires 2d;\n";
-		$on .= "\t\tif (\$http_Cache_Control ~ \"no-cache\") {\n";
-		$on .= "\t\t\trewrite ^(.*)$ /purge$1 last;\n";
-		$on .= "\t\t}\n";
+		//$on .= "\t\tif (\$http_Cache_Control ~ \"no-cache\") {\n";
+		//$on .= "\t\t\trewrite ^(.*)$ /purge$1 last;\n";
+		//$on .= "\t\t}\n";
 
 		$foot = "\tlocation ~ /purge(/.*) {\n";
 		$foot .= "\t\tallow all;\n";
@@ -144,6 +149,10 @@ class domain extends model{
 				$content .= $cache;
 			}else{
 				$content .= $off;
+			}
+			if($value['rule_type'] == 'dir' && $value['rule'] == '/'){
+				$content .= $log;
+				$content .= $cacheC;
 			}
 			$content .= "\t}\n";
 		}
